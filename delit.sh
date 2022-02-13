@@ -69,10 +69,6 @@ Write-Something 0 "Everything seems fine."
 initialDirectory=$(pwd)
 localDirectory="delit-$(date +%s)"
 
-Write-Something 1 "Backing up existing git config variables!"
-initialUserName=$(git config --get user.name)
-initialUserEmail=$(git config --get user.email)
-
 Write-Something 1 "Checking the repository!"
 if ! git ls-remote $4 &>/dev/null; then
   Write-Something 0 "There was an error while processing this repository."
@@ -87,13 +83,14 @@ fi
 
 cd $localDirectory
 
-Write-Something 1 "Setting git config variables!"
-git config --global user.name $2
-git config --global user.email $3
-
-Write-Something 1 "Performing the required activities!"
+Write-Something 1 "Initializing a local git repository!"
 git init >/dev/null 2>&1
 
+Write-Something 1 "Setting local git config variables!"
+git config --local user.name $2
+git config --local user.email $3
+
+Write-Something 1 "Performing the required activities!"
 printf "# I have deleted everything.\n## Thank you for visiting\x21\n[//]: # (Performed using https://github.com/TheBinitGhimire/Delit)" > README.md
 git add .
 git commit -m "Deleted everything!" >/dev/null 2>&1
@@ -106,10 +103,6 @@ cd $initialDirectory
 
 Write-Something 1 "Deleting the local repository!"
 rm -rf $localDirectory
-
-Write-Something 1 "Restoring git config variables!"
-git config --global user.name $initialUserName >/dev/null
-git config --global user.email $initialUserEmail >/dev/null
 
 printf "\n
     %%# All processes completed!\n

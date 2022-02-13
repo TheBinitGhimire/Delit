@@ -70,10 +70,6 @@ Write-Something -strings "Everything seems fine."
 $initialDirectory = (Get-Location)
 $localDirectory = "delit-$(Get-Random)"
 
-Write-Something -type 1 -strings "Backing up existing git config variables!"
-$initialUserName = (git config --get user.name) -join "`n"
-$initialUserEmail = (git config --get user.email) -join "`n"
-
 Write-Something -type 1 -strings "Checking the repository!"
 if(-Not (git ls-remote $args[3] 2>$null)) {
   Write-Something -strings "There was an error while processing this repository."
@@ -88,13 +84,14 @@ if(-Not (Test-Path -Path $localDirectory)) {
 
 Set-Location $localDirectory
 
-Write-Something -type 1 -strings "Setting git config variables!"
-git config --global user.name $args[1]
-git config --global user.email $args[2]
-
-Write-Something -type 1 -strings "Performing the required activities!"
+Write-Something -type 1 -strings "Initializing a local git repository!"
 git init >$null 2>&1
 
+Write-Something -type 1 -strings "Setting local git config variables!"
+git config --local user.name $args[1]
+git config --local user.email $args[2]
+
+Write-Something -type 1 -strings "Performing the required activities!"
 Write-Output "# I have deleted everything.`n## Thank you for visiting!`n[//]: # (Performed using https://github.com/TheBinitGhimire/Delit)" > README.md
 git add .
 git commit -m "Deleted everything!" >$null 2>&1
@@ -107,10 +104,6 @@ Set-Location $initialDirectory
 
 Write-Something -type 1 -strings "Deleting the local repository!"
 Remove-Item -r -fo $localDirectory
-
-Write-Something -type 1 -strings "Restoring git config variables!"
-git config --global user.name $initialUserName
-git config --global user.email $initialUserEmail
 
 Write-Output "`n
     %# All processes completed!`n
